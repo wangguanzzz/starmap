@@ -1,0 +1,9 @@
+version: '2'
+services:
+  chrome:
+    image: docker.io/selenium/standalone-chrome-debug
+    ports:
+      - "4444:4444"
+      - "5901:5900"
+    environment:
+      - VNC_NO_PASSWORD=1
