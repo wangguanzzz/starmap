@@ -24,5 +24,8 @@ end
 
 get '/' do 
   weibos = get_weibos_from_redis
-  weibos
+  
+  erb :weibo, :locals => {weibos: weibos}
+  #weibos = get_weibos_from_redis
+  #weibos
 end
