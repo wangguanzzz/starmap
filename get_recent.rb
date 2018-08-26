@@ -5,7 +5,7 @@ require 'mongo'
 require 'redis'
 TOKEN = '2.00cesKbC49eWNE3b55fa34f3ZIHDID'
 REDIS_KEY= 'weibos'
-LAST_ID_KEY= 'weibo_lastid'
+
 
 def get_weibos(token,last_id = nil)
 #client = Mongo::Client.new([ '127.0.0.1:27017' ], :database => 'starmap')
