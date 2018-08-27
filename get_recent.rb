@@ -24,7 +24,8 @@ end
 
 def insert_weibo_into_redis(redis,weibos)
   weibos.each do |weibo|
-    redis.sadd REDIS_KEY,weibo.to_json
+    redis.sadd REDIS_KEY,weibo['id']
+    redis.set weibo['idstr'], weibo.to_json
   end
 end
 
@@ -34,7 +35,10 @@ redis = Redis.new
 last_id = nil
 while(true)
   weibos = get_weibos(TOKEN,last_id)
-  last_id = weibos.first['id'] if not weibos.empty?
+  if not weibos.empty?
+    last_id = weibos.first['id']
+    puts "last_id: #{last_id}"
+  end
   insert_weibo_into_redis(redis,weibos)
   puts "#{weibos.size} weibos added !"
   sleep 30

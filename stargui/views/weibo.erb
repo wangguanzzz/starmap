@@ -12,10 +12,35 @@
   </head>
   <body>
     <h1>Weibo</h1>
-    
+  <main role="main" class="container">
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
     <% weibos.each do | weibo| %>
-    <%= weibo.class %>
+    <div class="media pt-3">
+  <img alt="32x32" class="mr-2 rounded" style="width: 32px; height: 32px;" src="<%= weibo['user']["profile_image_url"]%>" data-holder-rendered="true">
+    <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+      <%= (weibo['created_at'][0..-11] +"|" +weibo['idstr'])  %>
+
+     <strong class="d-block text-gray-dark"><%= weibo['user']['screen_name'] %></strong>
+     <%= weibo['text'] %>
+
+     <% if weibo['thumbnail_pic']%>
+     <a href="<%= weibo['bmiddle_pic']%>"><img src="<%= weibo['thumbnail_pic']%>"></a>
+     <% end %>
+
+     <% if weibo['retweeted_status'] %>
+     <%= " | " +weibo['retweeted_status']['text'] %>
+       <% if weibo['retweeted_status']['thumbnail_pic'] and weibo['retweeted_status']['bmiddle_pic'] %>
+          <a href="<%= weibo['retweeted_status']['bmiddle_pic']%>"><img src="<%= weibo['retweeted_status']['thumbnail_pic']%>"></a>
+        <% end %>
+     <% end %>
+     
+
+
+   </p>
+    </div>
     <% end %>
+    </div>
+  </main>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

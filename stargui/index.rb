@@ -15,16 +15,31 @@ end
 
 
 def get_weibos_from_redis
-  weibos = $redis.smembers REDIS_KEY
+  weibos = []
+  ids = $redis.smembers REDIS_KEY
+  ids.each {|id|  weibos << JSON.parse($redis.get id.to_s) if $redis.get id.to_s }
   weibos.sort! {|a,b| b['id'] <=> a['id'] }
-  
   return weibos
 end
 
+#def add_link(str)
+#  ind = (str =~ /http:/)
+#  if ind
+#    temp = str[ind..-1]
+#    temp = temp.split ' '
+#    temp = temp.first
+#    str[temp] = "<a href=\"#{temp}\">"+temp+"</a>"
+#    return str
+#  else
+#    return str
+#  end
+#end
 
 get '/' do 
   weibos = get_weibos_from_redis
-  
+#  weibos.each do |w|
+#    puts w if w['id'] == 4277762690256519
+#  end
   erb :weibo, :locals => {weibos: weibos}
   #weibos = get_weibos_from_redis
   #weibos
