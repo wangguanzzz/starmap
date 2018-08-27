@@ -19,7 +19,7 @@
   <img alt="32x32" class="mr-2 rounded" style="width: 32px; height: 32px;" src="<%= weibo['user']["profile_image_url"]%>" data-holder-rendered="true">
     <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
       <%= (weibo['created_at'][0..-11] +"|" +weibo['idstr'])  %>
-
+      <a href="byebye/<%= weibo['id'] %>">Delete</a>
      <strong class="d-block text-gray-dark"><%= weibo['user']['screen_name'] %></strong>
      <%= weibo['text'] %>
 
@@ -46,5 +46,6 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-confirmation/1.0.7/bootstrap-confirmation.js"></script>
   </body>
 </html>

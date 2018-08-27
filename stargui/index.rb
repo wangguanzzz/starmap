@@ -22,6 +22,11 @@ def get_weibos_from_redis
   return weibos
 end
 
+
+def remove_weibo(id)
+  $redis.srem REDIS_KEY, id
+  $redis.del id.to_s
+end
 #def add_link(str)
 #  ind = (str =~ /http:/)
 #  if ind
@@ -43,4 +48,11 @@ get '/' do
   erb :weibo, :locals => {weibos: weibos}
   #weibos = get_weibos_from_redis
   #weibos
+end
+
+get '/byebye/:weiboid' do
+  # matches "GET /hello/foo" and "GET /hello/bar"
+  # params['name'] is 'foo' or 'bar'
+  id = params['weiboid'].to_i
+  remove_weibo(id)
 end
