@@ -13,6 +13,7 @@ def get_weibos(token,last_id = nil)
     url = "https://api.weibo.com/2/statuses/home_timeline.json?access_token=#{token}&count=100&since_id=#{last_id}"
   else
     url = "https://api.weibo.com/2/statuses/home_timeline.json?access_token=#{token}&count=100"
+    puts url
   end
   res = JSON.parse(RestClient.get(url)) 
   return  res['statuses']
