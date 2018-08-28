@@ -18,14 +18,26 @@ def get_weibos_from_redis
   weibos = []
   ids = $redis.smembers REDIS_KEY
   ids.each {|id|  weibos << JSON.parse($redis.get id.to_s) if $redis.get id.to_s }
-  weibos.sort! {|a,b| b['id'] <=> a['id'] }
   return weibos
 end
+
 
 
 def remove_weibo(id)
   $redis.srem REDIS_KEY, id
   $redis.del id.to_s
+end
+
+def remove_weibo_from_word(word)
+  weibos = get_weibos_from_redis
+  
+  weibos.each do |weibo|
+    if weibo['text'].include? word
+      puts weibo['id']
+      puts weibo['id'].class
+      remove_weibo weibo['id']
+    end
+  end
 end
 #def add_link(str)
 #  ind = (str =~ /http:/)
@@ -42,6 +54,7 @@ end
 
 get '/' do 
   weibos = get_weibos_from_redis
+  weibos.sort! {|a,b| b['id'] <=> a['id'] }
 #  weibos.each do |w|
 #    puts w if w['id'] == 4277762690256519
 #  end
@@ -55,4 +68,10 @@ get '/byebye/:weiboid' do
   # params['name'] is 'foo' or 'bar'
   id = params['weiboid'].to_i
   remove_weibo(id)
+end
+
+# remove the key words text weibos
+get '/delete/:word' do
+  word = params['word']
+  remove_weibo_from_word word
 end
