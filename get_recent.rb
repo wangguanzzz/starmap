@@ -5,7 +5,7 @@ require 'mongo'
 require 'redis'
 TOKEN = '2.00cesKbC49eWNE3b55fa34f3ZIHDID'
 REDIS_KEY= 'weibos'
-
+LAST_ID = 'weibo_lastid'
 
 def get_weibos(token,last_id = nil)
 #client = Mongo::Client.new([ '127.0.0.1:27017' ], :database => 'starmap')
@@ -33,11 +33,12 @@ end
 
 
 redis = Redis.new
-last_id = nil
+last_id = redis.get LAST_ID
 while(true)
   weibos = get_weibos(TOKEN,last_id)
   if not weibos.empty?
     last_id = weibos.first['id']
+    redis.set LAST_ID, last_id
     puts "last_id: #{last_id}"
     puts 7.chr
   end
