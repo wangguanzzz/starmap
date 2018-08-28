@@ -38,6 +38,7 @@ while(true)
   if not weibos.empty?
     last_id = weibos.first['id']
     puts "last_id: #{last_id}"
+    puts 7.chr
   end
   insert_weibo_into_redis(redis,weibos)
   puts "#{weibos.size} weibos added !"
