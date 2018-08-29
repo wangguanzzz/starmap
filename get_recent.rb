@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 #get content
 require 'rest-client'
 require 'json'
