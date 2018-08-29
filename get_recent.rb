@@ -4,7 +4,7 @@ require 'rest-client'
 require 'json'
 require 'mongo'
 require 'redis'
-TOKEN = '2.00cesKbC49eWNE3b55fa34f3ZIHDID'
+TOKEN = ARGV[0]
 REDIS_KEY= 'weibos'
 LAST_ID = 'weibo_lastid'
 
@@ -45,5 +45,5 @@ while(true)
   end
   insert_weibo_into_redis(redis,weibos)
   puts "#{weibos.size} weibos added !"
-  sleep 30
+  sleep 120
 end
