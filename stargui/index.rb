@@ -3,7 +3,7 @@ require 'sinatra'
 require 'redis'
 
 REDIS_KEY= 'weibos'
-
+REDIS_FUTURES= 'futures_list'
 set :public_folder, File.dirname(__FILE__) + '/static'
 #set :port, 80
 set :environment, :production
@@ -22,6 +22,16 @@ def get_weibos_from_redis
   return weibos
 end
 
+def get_futures_from_redis
+  futures = []
+  ids = $redis.smembers REDIS_FUTURES
+  ids.each do |fid|
+    puts $redis.get fid
+    future = JSON.parse($redis.get fid)
+    futures << future
+  end
+  return futures
+end
 
 
 def remove_weibo(id)
@@ -62,6 +72,12 @@ get '/' do
   erb :weibo, :locals => {weibos: weibos}
   #weibos = get_weibos_from_redis
   #weibos
+end
+
+
+get '/futures' do 
+  futures = get_futures_from_redis
+  futures
 end
 
 get '/byebye/:weiboid' do

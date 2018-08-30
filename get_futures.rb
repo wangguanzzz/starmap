@@ -1,11 +1,15 @@
-# -*- coding: UTF-8 -*-
+#encoding: utf-8
+
 require 'rest-client'
 require 'json'
-
-FUTURES_MAP={'M0' => '豆粕连续','P0' => '棕榈连续','RU0' => '橡胶连续'}
+require 'redis'
+FUTURES_MAP={ 'SR0'=>'白糖连续', 'M0' => '豆粕连续','C0'=>'玉米连续','Y0'=>'豆油连续','P0' => '棕榈连续','RU0' => '橡胶连续'}
 FUTURES = ['M0','P0','RU0']
-
+FUTURE_INTERVAL = 20
 URL = 'http://hq.sinajs.cn/list='
+
+#set
+REDIS_FUTURES= 'futures_list'
 
 class Futurelist
   attr_accessor :name,:id
@@ -69,7 +73,7 @@ public
   end
 
   def refresh
-    @status = RestClient.get(URL+@id)
+    @status = RestClient.get(URL+@id).unpack('C*').pack('U*')
     price = get_price @status
     volume = get_volume @status
     add_price price
@@ -82,12 +86,23 @@ FUTURES_MAP.each do |key,value|
   fls << Futurelist.new(key,value)
 end
 
+redis = Redis.new
+
 while(true)
+  sleep FUTURE_INTERVAL
   fls.each {|fl| fl.refresh }
-  sleep 10
   fls.each do |fl|
-    puts fl.name
-    puts fl.price_delta_level 1
+    res =  {}
+    res[:name] = fl.name
+    res[:id] = fl.id
+    res[:price_level1] =fl.price_delta_level 1
+    res[:price_level3] = fl.price_delta_level 3
+    res[:price_level5] = fl.price_delta_level 5
+    res[:volume_level1] = fl.volume_delta_level 1
+    res[:volume_level3] = fl.volume_delta_level 3
+    res[:volume_level5] = fl.volume_delta_level 5
+    redis.sadd REDIS_FUTURES, res[:id]
+    redis.set res[:id], res.to_json
   end
   
 end
