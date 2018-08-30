@@ -4,6 +4,7 @@ require 'redis'
 
 REDIS_KEY= 'weibos'
 REDIS_FUTURES= 'futures_list'
+FUTURES_MAP={ 'SR0'=>'白糖连续', 'M0' => '豆粕连续','C0'=>'玉米连续','Y0'=>'豆油连续','P0' => '棕榈连续','RU0' => '橡胶连续'}
 set :public_folder, File.dirname(__FILE__) + '/static'
 #set :port, 80
 set :environment, :production
@@ -44,8 +45,6 @@ def remove_weibo_from_word(word)
   
   weibos.each do |weibo|
     if weibo['text'].include? word
-      puts weibo['id']
-      puts weibo['id'].class
       remove_weibo weibo['id']
     end
   end
@@ -66,10 +65,14 @@ end
 get '/' do 
   weibos = get_weibos_from_redis
   weibos.sort! {|a,b| b['id'] <=> a['id'] }
+
+  futures = get_futures_from_redis
+  price1_top3 = (futures.sort{|a,b| b[:price_level1] <=> a[:price_level1]})[0..2]
+
 #  weibos.each do |w|
 #    puts w if w['id'] == 4277762690256519
 #  end
-  erb :weibo, :locals => {weibos: weibos}
+  erb :weibo, :locals => {weibos: weibos,price1_top3: price1_top3 }
   #weibos = get_weibos_from_redis
   #weibos
 end
@@ -77,7 +80,7 @@ end
 
 get '/futures' do 
   futures = get_futures_from_redis
-  futures
+  futures.to_s
 end
 
 get '/byebye/:weiboid' do

@@ -107,10 +107,3 @@ while(true)
   
 end
 
-
-#FUTURES.each do |ft|
-#  res = RestClient.get(URL+ft)
-#  puts FUTURES_MAP[ft]
-#  puts get_price res
-#  puts get_volume res
-#end
