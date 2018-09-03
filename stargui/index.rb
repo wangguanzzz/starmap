@@ -4,7 +4,6 @@ require 'redis'
 
 REDIS_KEY= 'weibos'
 REDIS_FUTURES= 'futures_list'
-FUTURES_MAP={ 'SR0'=>'白糖连续', 'M0' => '豆粕连续','C0'=>'玉米连续','Y0'=>'豆油连续','P0' => '棕榈连续','RU0' => '橡胶连续'}
 set :public_folder, File.dirname(__FILE__) + '/static'
 #set :port, 80
 set :environment, :production
@@ -27,7 +26,6 @@ def get_futures_from_redis
   futures = []
   ids = $redis.smembers REDIS_FUTURES
   ids.each do |fid|
-    puts $redis.get fid
     future = JSON.parse($redis.get fid)
     futures << future
   end
@@ -49,6 +47,8 @@ def remove_weibo_from_word(word)
     end
   end
 end
+
+
 #def add_link(str)
 #  ind = (str =~ /http:/)
 #  if ind
@@ -67,21 +67,19 @@ get '/' do
   weibos.sort! {|a,b| b['id'] <=> a['id'] }
 
   futures = get_futures_from_redis
-  price1_top3 = (futures.sort{|a,b| b[:price_level1] <=> a[:price_level1]})[0..2]
-
+  price1_top3 = (futures.sort{|a,b| b['price_level1'].abs <=> a['price_level1'].abs })[0..2]
+  price2_top3 = (futures.sort{|a,b| b['price_level3'].abs <=> a['price_level3'].abs })[0..2]
+  volume1_top3 = (futures.sort!{|a,b| b['volume_level1'].abs <=> a['volume_level1'].abs })[0..2]
+  volume2_top3 = (futures.sort!{|a,b| b['volume_level3'].abs <=> a['volume_level3'].abs })[0..2]
 #  weibos.each do |w|
 #    puts w if w['id'] == 4277762690256519
 #  end
-  erb :weibo, :locals => {weibos: weibos,price1_top3: price1_top3 }
+  erb :weibo, :locals => {weibos: weibos,price1_top3: price1_top3, volume1_top3: volume1_top3,price2_top3: price2_top3, volume2_top3: volume2_top3 }
   #weibos = get_weibos_from_redis
   #weibos
 end
 
 
-get '/futures' do 
-  futures = get_futures_from_redis
-  futures.to_s
-end
 
 get '/byebye/:weiboid' do
   # matches "GET /hello/foo" and "GET /hello/bar"

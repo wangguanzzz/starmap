@@ -11,9 +11,33 @@
     <title>starmap</title>
   </head>
   <body>
-  <div class="row">
-    <%= price1_top3 %>
-  </div>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">20s Price</a>
+    <% price1_top3.each do |p1| %>
+      <a class="navbar-brand small" href="#"><%= p1['name']+":"+p1['price_level1'].to_s[0..4]+"%" %> </a>
+    <% end %>
+
+  </nav>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">20s Volume</a>
+    <% volume1_top3.each do |v1| %>
+      <a class="navbar-brand small" href="#"><%= v1['name']+":"+v1['volume_level1'].to_s[0..4]+"%" %> </a>
+    <% end %>
+  </nav>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">40s Price</a>
+    <% price2_top3.each do |p1| %>
+      <a class="navbar-brand small" href="#"><%= p1['name']+":"+p1['price_level3'].to_s[0..4]+"%" %> </a>
+    <% end %>
+
+  </nav>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">40s Volume</a>
+    <% volume2_top3.each do |v1| %>
+      <a class="navbar-brand small" href="#"><%= v1['name']+":"+v1['volume_level3'].to_s[0..4]+"%" %> </a>
+    <% end %>
+  </nav>
+
   <main role="main" class="container">
 
     <div class="my-3 p-3 bg-white rounded shadow-sm">
