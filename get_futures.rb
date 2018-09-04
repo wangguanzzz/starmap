@@ -96,12 +96,16 @@ end
 redis = Redis.new
 
 while(true)
-  sleep FUTURE_INTERVAL
+  start_time = Time.now
   fls.each {|fl| fl.refresh }
+  elaspe = Time.now - start_time
+  puts elaspe
+
   fls.each do |fl|
     res =  {}
     res[:name] = fl.name
     res[:id] = fl.id
+    res[:time] = start_time.to_i
     res[:price_level1] =fl.price_delta_level 1
     res[:price_level3] = fl.price_delta_level 3
     res[:price_level5] = fl.price_delta_level 5
@@ -112,5 +116,10 @@ while(true)
     redis.set res[:id], res.to_json
   end
   
+  if FUTURE_INTERVAL > elaspe.to_i
+    sleep FUTURE_INTERVAL - elaspe.to_i
+  else
+    sleep FUTURE_INTERVAL
+  end
 end
 
