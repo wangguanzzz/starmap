@@ -3,7 +3,9 @@
 require 'rest-client'
 require 'json'
 require 'redis'
-FUTURES_MAP={ 'SR0'=>'白糖连续', 'M0' => '豆粕连续','C0'=>'玉米连续','Y0'=>'豆油连续','P0' => '棕榈连续','RU0' => '橡胶连续'}
+FUTURES_MAP={ 'CU0'=>'铜连续','HC0'=>'热卷连续','NI0'=>'镍连续','PB0'=>'铅连续','RB0'=>'螺纹钢连续', \
+  'I0'=>'铁矿石连续','J0'=>'焦炭连续', 'JD0' =>'鸡蛋连','RI0' =>'玻璃连续','FG0'=>'菜粕连续','TA0'=>'PTA连续','AP0'=>'苹果连续', \
+  'SN0'=>'锡连续','ZN0'=>'锌连续','A0'=>'豆1连续','B0'=>'豆2连续','SR0'=>'白糖连续', 'M0' => '豆粕连续','C0'=>'玉米连续','Y0'=>'豆油连续','P0' => '棕榈连续','RU0' => '橡胶连续'}
 FUTURES = ['M0','P0','RU0']
 FUTURE_INTERVAL = 20
 URL = 'http://hq.sinajs.cn/list='
@@ -23,6 +25,7 @@ private
   def delta_level(arr,level)
     ref = arr.first.to_f
     comp = arr[level].to_f
+    return 0 if comp == 0
     return (ref - comp)/comp*100
   end
 
@@ -73,7 +76,11 @@ public
   end
 
   def refresh
-    @status = RestClient.get(URL+@id).unpack('C*').pack('U*')
+    begin
+      @status = RestClient.get(URL+@id).unpack('C*').pack('U*')
+    rescue Exception => e
+      puts @name + " is not accessible" 
+    end
     price = get_price @status
     volume = get_volume @status
     add_price price
