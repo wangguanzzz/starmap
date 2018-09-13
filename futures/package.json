@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "redis": "^2.8.0"
+    "redis": "^2.8.0",
+    "request-promise-lite": "^0.14.0",
+    "superagent": "^3.8.3"
   }
 }
