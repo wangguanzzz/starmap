@@ -1,27 +1,15 @@
 const express = require("express");
 const app = express();
+const futuresUtils = require("./futuresUtils");
 
-const URL = "http://hq.sinajs.cn/list=";
-const request = require("request");
-
-function getfutures(arr) {
-  return {
-    price: arr[8],
-    volumn: arr[14]
-  };
-}
-
-function getFutureInfo(type) {
-  request(URL + type, (error, response, body) => {
-    if (!error && response.statusCode === 200) {
-      data = body.split(",");
-      return getfutures(data);
-    }
+app.get("/futures/:symbol", (req, res) => {
+  //futuresUtils.futureList.includes()
+  // let ping = futuresUtils.getFutureData(req.params.symbol);
+  let ping = futuresUtils.getFutureData("CU0");
+  ping.then(body => {
+    res.send(body);
   });
-}
-
-app.get("/", (req, res) => {
-  res.send(getFutureInfo("CU0"));
+  // res.send(req.params.symbol);
 });
 
 app.listen(3000);
